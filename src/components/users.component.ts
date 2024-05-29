@@ -30,7 +30,7 @@ export class Users implements OnInit {
 
   ngOnInit() {
     // The signal will automatically update the view when the state changes.
-    console.log(this.usersSignal());
+    //console.log(this.usersSignal());
   }
 
   handleClick() {

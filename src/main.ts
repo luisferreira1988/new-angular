@@ -1,62 +1,74 @@
-import {
-  Component,
-  provideExperimentalZonelessChangeDetection,
-} from '@angular/core';
+import { Component, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { User, Users } from './components/users.component';
 import { UsersService } from './services/users.service';
+import { provideHttpClient } from '@angular/common/http';
+
+export interface User {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
   template: `
-    <button (click)="handleClick()">emit data to child</button>
-    <!--
-    <app-users (dataToParent)="dataFromChild($event)"  [data]="data" />
+  <button (click)="handleClick()">Add User</button>
+  <button (click)="updateUser()">Update User</button>
+  <button (click)="deleteUser()">Delete User</button>
     @for (user of users; track user) { 
-      {{user.name}}
+      {{user.title}}
     } 
    @empty { 
     <div>No users on database</div> 
    }
-  -->
-   `,
-  imports: [Users],
+  `,
 })
 export class App {
-  data: any = {
-    name: 'Name',
-    age: 15,
-    sex: 'Masculine',
-  };
-  users: User[] = [
-    { name: 'John', age: 15, sex: 'feminie' },
-    { name: 'Maria', age: 16, sex: 'feminie' },
-  ];
+  users: User[] = [];
 
   constructor(private usersService: UsersService) {}
 
   ngOnInit() {
-    this.usersService.setUsers(this.users);
+    this.usersService.fetchUsers().subscribe((users) => {
+      this.users = users;
+    });
     this.usersService.getUsers();
   }
 
+  /*
   handleClick() {
-    this.users.push({
-      name: 'Name',
-      age: 15,
+    const newUser: User = {
+      name: 'New User',
+      age: 20,
       sex: 'Masculine',
-    });
-    this.usersService.setUsers(this.users);
+    };
+    this.usersService.createUser(newUser);
+    this.users = this.usersService.getUsers();
   }
 
-  dataFromChild(event: any) {
-    console.log(event);
-    this.users.push(event);
-    console.log(this.users);
+  updateUser() {
+    const updatedUser: User = {
+      name: 'John',
+      age: 17,
+      sex: 'Masculine',
+    };
+    this.usersService.updateUser(updatedUser);
+    this.users = this.usersService.getUsers();
+  }
+
+  deleteUser() {
+    this.usersService.deleteUser('Maria');
+    this.users = this.usersService.getUsers();
+  }
+  */
+
+  trackByUser(index: number, user: User): number {
+    return user.id;
   }
 }
 
 bootstrapApplication(App, {
-  providers: [provideExperimentalZonelessChangeDetection()],
+  providers: [provideHttpClient(),provideExperimentalZonelessChangeDetection()],
 });
