@@ -1,15 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, Signal } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
-import { tap } from 'rxjs/internal/operators/tap';
-import { User } from '../main';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
-
-
   private usersSignal = signal<User[]>([]);
 
   constructor(private http: HttpClient) {}
@@ -32,11 +30,13 @@ export class UsersService {
     return this.usersSignal();
   }
 
-  /*
   createUser(user: User) {
     const currentUsers = this.usersSignal();
     this.usersSignal.set([...currentUsers, user]);
   }
+}
+  /*
+
 
   updateUser(updatedUser: User) {
     const currentUsers = this.usersSignal().map(user =>
@@ -50,4 +50,4 @@ export class UsersService {
     this.usersSignal.set(currentUsers);
   }
   */
-}
+
